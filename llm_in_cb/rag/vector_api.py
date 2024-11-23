@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from llm_in_cb.config import VECTOR_PORT
-from vector_database import Database, Item
+from llm_in_cb.rag.vector_database import Database, Item
 
 database = Database()
 app = FastAPI()
