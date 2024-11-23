@@ -1,0 +1,15 @@
+{
+    "telegram_bot": {
+        "token": "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
+    },
+    "rag": {
+        "token": " "
+    },
+    "model1": {
+        "token": ""
+    },
+    "model2": {
+        "token": ""
+    }
+}
+  
