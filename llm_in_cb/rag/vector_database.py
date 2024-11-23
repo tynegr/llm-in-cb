@@ -4,7 +4,7 @@ import qdrant_client
 from pydantic import BaseModel
 from qdrant_client.http import models
 
-from llm_in_cb.config import QDRANT_URL, EMBED_SIZE
+from llm_in_cb.config import QDRANT_URL, EMBED_SIZE, COLLECTION_NAME
 
 
 class Item(BaseModel):
@@ -14,7 +14,7 @@ class Item(BaseModel):
 
 class Database:
     def __init__(self) -> None:
-        self.collection_name = "llm_in_cb_test_2"
+        self.collection_name = COLLECTION_NAME
         self.client = qdrant_client.QdrantClient(
             QDRANT_URL
         )

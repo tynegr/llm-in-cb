@@ -7,7 +7,7 @@ VECTOR_API_URL = f"http://127.0.0.1:{VECTOR_PORT}"
 EMBEDDING_API_URL = f"http://127.0.0.1:{EMBED_PORT}"
 
 texts_to_embed = {
-    "texts": ["Hello, this is a test."]
+    "text": "Hello, this is a test."
 }
 
 response = requests.post(f"{EMBEDDING_API_URL}/embed", json=texts_to_embed)
@@ -18,10 +18,9 @@ if response.status_code == 200:
 else:
     print("Failed to generate embeddings:", response.json())
 
-
 data_to_add = {
     "embeddings": embeddings,
-    "content": "This is a test content",
+    "content": "Hello, this is a test.",
     "category": "test_category",
 }
 
@@ -34,7 +33,7 @@ else:
 
 data_to_search = {
     "embeddings": embeddings,
-    "content": "This is a test content",
+    "content": "Hello, this is a test.",
     "category": "test_category",
 }
 

@@ -1,8 +1,9 @@
 from pydantic import BaseModel
 
+
 class TextRequest(BaseModel):
-    texts: list[str]
+    text: str
 
 
 class EmbeddingResponse(BaseModel):
-    embeddings: list[list[float]]
+    embeddings: list[float]
