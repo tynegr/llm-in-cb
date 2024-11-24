@@ -1,9 +1,8 @@
 import requests
 
-VECTOR_API_URL = "http://localhost:5555"  # Replace with your actual vector API URL
-EMBEDDING_API_URL = "http://localhost:6666"  # Replace with your actual embedding API URL
+VECTOR_API_URL = "http://localhost:5555"
+EMBEDDING_API_URL = "http://localhost:6666"
 
-# Step 1: Generate embeddings using the embedding API
 texts_to_embed = {
     "text": "Hello, this is a test."
 }
@@ -16,9 +15,8 @@ if response.status_code == 200:
     print(f"Embeddings successfully generated: {len(embeddings)}")
 else:
     print("Failed to generate embeddings:", response.json())
-    exit(1)  # Exit if embeddings generation fails
+    exit(1)
 
-# Step 2: Add data to the vector API
 data_to_add = {
     "embeddings": embeddings,
     "content": "Hello, this is a test.",
@@ -32,9 +30,8 @@ if response_add.status_code == 200:
     print("Data added successfully.")
 else:
     print("Failed to add data:", response_add.json())
-    exit(1)  # Exit if data addition fails
+    exit(1)
 
-# Step 3: Search for data in the vector API
 data_to_search = {
     "embeddings": embeddings,
     "content": "Hello, this is a test.",
@@ -49,4 +46,4 @@ if response_search.status_code == 200:
     print("Search results:", search_results)
 else:
     print("Search failed:", response_search.json())
-    exit(1)  # Exit if search fails
+    exit(1)

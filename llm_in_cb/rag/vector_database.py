@@ -74,14 +74,14 @@ class Database:
                 range(len(response))]
 
     def delete_points(self, data: dict):
-        document_id = data["document_id"]
+        document_id = data["category"]
         return self.client.delete(
             collection_name=self.collection_name,
             points_selector=models.FilterSelector(
                 filter=models.Filter(
                     must=[
                         models.FieldCondition(
-                            key="document_id",
+                            key="category",
                             match=models.MatchValue(value=document_id),
                         ),
                     ],

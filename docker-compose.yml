@@ -41,5 +41,18 @@ services:
     ports:
       - "5555:5555"
 
+  bot:
+    build:
+      context: .
+    container_name: telegram_bot
+    environment:
+      TGBOT_API: "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
+      EMBEDDING_API_URL: "http://embedding_api:6666"
+      VECTOR_DB_API_URL: "http://vector_api:5555"
+    depends_on:
+      - embedding_api
+      - vector_api
+    command: [ "poetry", "run", "python", "llm_in_cb/bot/botik.py" ]
+
 volumes:
   qdrant_data:

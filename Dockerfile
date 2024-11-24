@@ -10,6 +10,8 @@ RUN poetry config virtualenvs.create false && poetry install --no-interaction --
 
 COPY . .
 
+ENV PYTHONPATH=/app
+
 EXPOSE 6666 5555
 
 CMD ["bash"]
