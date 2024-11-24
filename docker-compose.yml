@@ -43,7 +43,7 @@ services:
 
   llm_api:
     build:
-      context: ./llm_api
+      context: ./llm_in_cb/llm_api/Dockerfile
     container_name: llm_api
     ports:
       - "8000:8000"

@@ -15,7 +15,9 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.10 1
 RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
 
 WORKDIR /app
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock /app/
+
+COPY llm_in_cb /app/llm_in_cb
 
 RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-ansi
