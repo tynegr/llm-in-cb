@@ -6,7 +6,7 @@ authors = ["Egor Tishchenko & Nikita Arzamazov"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.10,<3.13"
 qdrant-client = "^1.12.1"
 pydantic = "^2.10.1"
 torch = "^2.5.1"
