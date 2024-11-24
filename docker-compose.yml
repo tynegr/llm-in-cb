@@ -8,7 +8,7 @@ services:
       - "6333:6333"
       - "6334:6334"
     volumes:
-       - qdrant_data:/qdrant/storage:z
+      - qdrant_data:/qdrant/storage:z
 
   embedding_api:
     build:
@@ -22,7 +22,7 @@ services:
       COLLECTION_NAME: "llm_in_cb_test_2"
     depends_on:
       - qdrant
-    command: ["poetry", "run", "uvicorn", "llm_in_cb.rag.embedder.embedding_api:app", "--host", "0.0.0.0", "--port", "6666"]
+    command: [ "poetry", "run", "uvicorn", "llm_in_cb.rag.embedder.embedding_api:app", "--host", "0.0.0.0", "--port", "6666" ]
     ports:
       - "6666:6666"
 
@@ -37,9 +37,16 @@ services:
       COLLECTION_NAME: "llm_in_cb_test_2"
     depends_on:
       - qdrant
-    command: ["poetry", "run", "uvicorn", "llm_in_cb.rag.vector_api:app", "--host", "0.0.0.0", "--port", "5555"]
+    command: [ "poetry", "run", "uvicorn", "llm_in_cb.rag.vector_api:app", "--host", "0.0.0.0", "--port", "5555" ]
     ports:
       - "5555:5555"
+
+  llm_api:
+    image: vllm:v1
+    container_name: llm_api
+    ports:
+      - "8000:8000"
+    command: [ "vllm", "serve", "facebook/opt-125m" ]
 
   bot:
     build:

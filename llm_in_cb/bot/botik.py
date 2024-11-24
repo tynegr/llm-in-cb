@@ -7,7 +7,8 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, filters, MessageHandler, CommandHandler, \
     ContextTypes, ConversationHandler, CallbackQueryHandler
 
-from llm_in_cb.config import CONFIG_PATH, VECTOR_DB_API_URL, EMBEDDING_API_URL
+from llm_in_cb.config import CONFIG_PATH, VECTOR_DB_API_URL, EMBEDDING_API_URL, \
+    LLM_API_URL
 
 process_lock = threading.Lock()
 
@@ -22,6 +23,22 @@ def load_config(config_path):
 config = load_config(CONFIG_PATH)
 
 TGBOT_API = config["telegram_bot"]["token"]
+
+
+def query_llm(prompt, max_tokens=100, temperature=0.7):
+    try:
+        data = {
+            "model": "facebook/opt-125m",
+            "prompt": prompt,
+            "max_tokens": max_tokens,
+            "temperature": temperature
+        }
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(LLM_API_URL, headers=headers, json=data)
+        response.raise_for_status()
+        return response.json()["choices"][0]["text"]
+    except Exception as e:
+        return f"Ошибка при обращении к LLM: {str(e)}"
 
 
 def get_embeddings(text):
@@ -55,25 +72,41 @@ async def process_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text("Обрабатываю запрос...")
 
-    embeddings = get_embeddings(user_input)
-    if "error" in embeddings:
-        await update.message.reply_text(embeddings["error"])
-        return
+    try:
+        embeddings = get_embeddings(user_input)
+        if "error" in embeddings:
+            await context.bot.send_message(chat_id=update.effective_chat.id,
+                                           text=embeddings["error"])
+            return
 
-    category = "default"
-    search_results = search_vector_database(embeddings, category)
-    if "error" in search_results:
-        await update.message.reply_text(search_results["error"])
-        return
+        category = "default"
+        search_results = search_vector_database(embeddings, category)
+        if "error" in search_results:
+            await context.bot.send_message(chat_id=update.effective_chat.id,
+                                           text=search_results["error"])
+            return
 
-    if search_results:
-        response_text = "\n\n".join(
-            [f"Контент: {item}" for item in search_results])
-    else:
-        response_text = "Ничего похожего не найдено."
+        if search_results:
+            context_from_rag = "\n".join(
+                [item for item in search_results]
+            )
+        else:
+            context_from_rag = "Контекст не найден."
 
-    await context.bot.send_message(chat_id=update.effective_chat.id,
-                                   text=response_text)
+        prompt = f"Контекст: {context_from_rag}\n\nВопрос: {user_input}"
+
+        llm_response = query_llm(prompt)
+        if llm_response.startswith("Ошибка"):
+            await context.bot.send_message(chat_id=update.effective_chat.id,
+                                           text=f"Ошибка при генерации ответа: {llm_response}")
+            return
+
+        await context.bot.send_message(chat_id=update.effective_chat.id,
+                                       text=f"Ответ от модели:\n{llm_response}")
+
+    except Exception as e:
+        await context.bot.send_message(chat_id=update.effective_chat.id,
+                                       text=f"Произошла ошибка: {str(e)}")
 
 
 def validate_input(input):
