@@ -42,11 +42,11 @@ services:
       - "5555:5555"
 
   llm_api:
-    image: vllm:v1
+    build:
+      context: ./llm_api
     container_name: llm_api
     ports:
       - "8000:8000"
-    command: [ "vllm", "serve", "facebook/opt-125m" ]
 
   bot:
     build:
