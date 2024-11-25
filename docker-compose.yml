@@ -41,13 +41,18 @@ services:
     ports:
       - "5555:5555"
 
-  llm_api:
-    build:
-      context: ./
-      dockerfile: ./llm_in_cb/llm_api/Dockerfile
-    container_name: llm_api
-    ports:
-      - "8000:8000"
+llm_api:
+  build:
+    context: ./
+    dockerfile: ./llm_in_cb/llm_api/Dockerfile
+  container_name: llm_api
+  runtime: nvidia
+  environment:
+    NVIDIA_VISIBLE_DEVICES: all
+    NVIDIA_DRIVER_CAPABILITIES: compute,utility
+  ports:
+    - "8000:8000"
+
 
   bot:
     build:
