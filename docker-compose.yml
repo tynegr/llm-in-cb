@@ -42,16 +42,24 @@ services:
       - "5555:5555"
 
   llm_api:
-    build:
-      context: ./
-      dockerfile: ./llm_in_cb/llm_api/Dockerfile
+    image: ghcr.io/huggingface/text-generation-inference:2.4.1-intel-cpu
     container_name: llm_api
-    runtime: nvidia
     environment:
-      NVIDIA_VISIBLE_DEVICES: all
-      NVIDIA_DRIVER_CAPABILITIES: compute,utility
-    ports:
-      - "8000:8000"
+      MODEL_ID: "openai-community/gpt2"
+      CUDA_GRAPHS: "0"
+    volumes:
+      - ./data:/data
+    shm_size:
+    ipc: host
+    privileged: true
+    cap_add:
+      - SYS_NICE
+    devices:
+      - /dev/dri
+    network_mode: host
+    command: ["--model-id", "openai-community/gpt2", "--cuda-graphs", "0", "--port", "1289"]
+
+
 
 
   bot:
