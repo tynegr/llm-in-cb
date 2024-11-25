@@ -49,7 +49,7 @@ services:
       CUDA_GRAPHS: "0"
     volumes:
       - ./data:/data
-    shm_size:
+    shm_size: "1g"
     ipc: host
     privileged: true
     cap_add:
