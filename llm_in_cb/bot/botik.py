@@ -28,10 +28,11 @@ TGBOT_API = config["telegram_bot"]["token"]
 def query_llm(prompt, max_tokens=100, temperature=0.7):
     try:
         data = {
-            "model": "facebook/opt-125m",
-            "prompt": prompt,
-            "max_tokens": max_tokens,
-            "temperature": temperature
+            "inputs": prompt,
+            "parameters": {
+                "max_new_tokens": max_tokens,
+                "temperature": temperature
+            }
         }
         headers = {"Content-Type": "application/json"}
         response = requests.post(LLM_API_URL, headers=headers, json=data)

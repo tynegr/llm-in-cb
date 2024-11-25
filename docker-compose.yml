@@ -57,7 +57,7 @@ services:
     devices:
       - /dev/dri
     network_mode: host
-    command: ["--model-id", "openai-community/gpt2", "--cuda-graphs", "0", "--port", "1289"]
+    command: ["--model-id", "openai-community/gpt2", "--cuda-graphs", "0", "--port", "1349"]
 
 
 
