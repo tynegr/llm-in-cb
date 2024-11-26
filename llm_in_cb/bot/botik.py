@@ -28,7 +28,7 @@ TGBOT_API = config["telegram_bot"]["token"]
 def query_llm(prompt, max_tokens=100, temperature=0.7):
     try:
         data = {
-            "inputs": prompt,
+            "prompt": prompt,
             "parameters": {
                 "max_new_tokens": max_tokens,
                 "temperature": temperature
@@ -37,7 +37,7 @@ def query_llm(prompt, max_tokens=100, temperature=0.7):
         headers = {"Content-Type": "application/json"}
         response = requests.post(LLM_API_URL, headers=headers, json=data)
         response.raise_for_status()
-        return response.json()["generated_text"]
+        return response.json()["content"]
     except Exception as e:
         return f"Ошибка при обращении к LLM: {str(e)}"
 

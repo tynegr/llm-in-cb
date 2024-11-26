@@ -41,24 +41,29 @@ services:
     ports:
       - "5555:5555"
 
-  llm_api:
-    image: ghcr.io/huggingface/text-generation-inference:2.4.1-intel-cpu
-    container_name: llm_api
-    environment:
-      MODEL_ID: "openai-community/gpt2"
-      CUDA_GRAPHS: "0"
-    volumes:
-      - ./data:/data
-    shm_size: "1g"
-    ipc: host
-    privileged: true
-    cap_add:
-      - SYS_NICE
-    devices:
-      - /dev/dri
-    network_mode: host
-    command: ["--model-id", "openai-community/gpt2", "--cuda-graphs", "0", "--port", "1349"]
+#  llama_cpp:
+#    build:
+#      context: .
+#      dockerfile: llm_in_cb/llm_api/Dockerfile.llama
+#    container_name: llama_cpp
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - ./data:/llama.cpp/models
+#    environment:
+#      MODEL_PATH: "llm_in_cb/llm_api/model_file/qwen2.5-coder-1.5b-q8_0.gguf"
+#    command: [ "./examples/server/llama-server", "--host", "0.0.0.0", "--port", "1349", "--hf-file", "/llama.cpp/models/qwen2.5-coder-1.5b-q8_0.gguf" ]
 
+  llama_cpp:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: llama_cpp
+    ports:
+      - "1349:1349"  # Port mapping for the server
+    volumes:
+      - ./models:/models
+    environment:
+      MODEL_PATH: "/models/qwen2.5-coder-1.5b-q8_0.gguf"
+    command: ["-m", "/models/qwen2.5-coder-1.5b-q8_0.gguf", "--port", "1349", "--host", "0.0.0.0"]
 
 
 
@@ -70,7 +75,7 @@ services:
       TGBOT_API: "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
       EMBEDDING_API_URL: "http://embedding_api:6666"
       VECTOR_DB_API_URL: "http://vector_api:5555"
-      LLM_API_URL: "http://llm_api:1349/generate"
+      LLM_API_URL: "http://llama_cpp:1349/completion"
     depends_on:
       - embedding_api
       - vector_api
