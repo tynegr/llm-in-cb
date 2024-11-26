@@ -70,6 +70,7 @@ services:
       TGBOT_API: "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
       EMBEDDING_API_URL: "http://embedding_api:6666"
       VECTOR_DB_API_URL: "http://vector_api:5555"
+      LLM_API_URL: "http://llm_api:1349/generate"
     depends_on:
       - embedding_api
       - vector_api
