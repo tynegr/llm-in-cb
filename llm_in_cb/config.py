@@ -9,4 +9,3 @@ COLLECTION_NAME = os.getenv("COLLECTION_NAME", "llm_in_cb_test_2")
 CONFIG_PATH = os.getenv("CONFIG_PATH", "llm_in_cb/bot/config_api.json")
 VECTOR_DB_API_URL = os.getenv("VECTOR_DB_API_URL", "http://localhost:5555")
 EMBEDDING_API_URL = os.getenv("EMBEDDING_API_URL", "http://localhost:6666")
-
