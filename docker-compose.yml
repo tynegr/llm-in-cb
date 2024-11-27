@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  qdrant:
+    image: qdrant/qdrant
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+       - qdrant_data:/qdrant/storage:z
+
+  embedding_api:
+    build:
+      context: .
+    container_name: embedding_api
+    environment:
+      QDRANT_URL: "http://qdrant:6333"
+      EMBED_PORT: "6666"
+      EMBED_SIZE: "384"
+      MODEL_NAME: "intfloat/multilingual-e5-small"
+      COLLECTION_NAME: "llm_in_cb_test_2"
+    depends_on:
+      - qdrant
+    command: ["poetry", "run", "uvicorn", "llm_in_cb.rag.embedder.embedding_api:app", "--host", "0.0.0.0", "--port", "6666"]
+    ports:
+      - "6666:6666"
+
+  vector_api:
+    build:
+      context: .
+    container_name: vector_api
+    environment:
+      QDRANT_URL: "http://qdrant:6333"
+      VECTOR_PORT: "5555"
+      EMBED_SIZE: "384"
+      COLLECTION_NAME: "llm_in_cb_test_2"
+    depends_on:
+      - qdrant
+    command: ["poetry", "run", "uvicorn", "llm_in_cb.rag.vector_api:app", "--host", "0.0.0.0", "--port", "5555"]
+    ports:
+      - "5555:5555"
+
+  bot:
+    build:
+      context: .
+    container_name: telegram_bot
+    environment:
+      TGBOT_API: "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
+      EMBEDDING_API_URL: "http://embedding_api:6666"
+      VECTOR_DB_API_URL: "http://vector_api:5555"
+    depends_on:
+      - embedding_api
+      - vector_api
+    command: [ "poetry", "run", "python", "llm_in_cb/bot/botik.py" ]
+
+volumes:
+  qdrant_data:
