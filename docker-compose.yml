@@ -41,29 +41,27 @@ services:
     ports:
       - "5555:5555"
 
-#  llama_cpp:
-#    build:
-#      context: .
-#      dockerfile: llm_in_cb/llm_api/Dockerfile.llama
-#    container_name: llama_cpp
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./data:/llama.cpp/models
-#    environment:
-#      MODEL_PATH: "llm_in_cb/llm_api/model_file/qwen2.5-coder-1.5b-q8_0.gguf"
-#    command: [ "./examples/server/llama-server", "--host", "0.0.0.0", "--port", "1349", "--hf-file", "/llama.cpp/models/qwen2.5-coder-1.5b-q8_0.gguf" ]
-
   llama_cpp:
     image: ghcr.io/ggerganov/llama.cpp:server
     container_name: llama_cpp
     ports:
-      - "1349:1349"  # Port mapping for the server
+      - "1349:1349"
     volumes:
       - ./models:/models
     environment:
       MODEL_PATH: "/models/qwen2.5-coder-1.5b-q8_0.gguf"
     command: ["-m", "/models/qwen2.5-coder-1.5b-q8_0.gguf", "--port", "1349", "--host", "0.0.0.0"]
+
+    llama_cpp_new:
+      image: ghcr.io/ggerganov/llama.cpp:server
+      container_name: llama_cpp_new
+      ports:
+        - "1348:1348"
+      volumes:
+        - ./models:/models
+      environment:
+        MODEL_PATH: "/models/qwen2.5-coder-1.5b-q8_0.gguf"
+      command: [ "-m", "/models/qwen2.5-coder-1.5b-q8_0.gguf", "--port", "1348", "--host", "0.0.0.0" ]
 
 
 
@@ -76,6 +74,7 @@ services:
       EMBEDDING_API_URL: "http://embedding_api:6666"
       VECTOR_DB_API_URL: "http://vector_api:5555"
       LLM_API_URL: "http://llama_cpp:1349/completion"
+      LLM_API_URL_NEW: "http://llama_cpp_new:1348/completion"
     depends_on:
       - embedding_api
       - vector_api
