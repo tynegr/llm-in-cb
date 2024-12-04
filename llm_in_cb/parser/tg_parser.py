@@ -5,7 +5,7 @@ import json
 import requests
 from llm_in_cb.config import VECTOR_DB_API_URL, EMBEDDING_API_URL
 
-posts_per_channel = 5000 # выбрать нужное колеичество постов для формирвоания контекстов
+posts_per_channel = 5000
 
 with open("llm_in_cb/parser/tg_channels.txt", "r") as file:
     lines = file.readlines()
