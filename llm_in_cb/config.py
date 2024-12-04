@@ -11,4 +11,3 @@ VECTOR_DB_API_URL = os.getenv("VECTOR_DB_API_URL", "http://localhost:5555")
 EMBEDDING_API_URL = os.getenv("EMBEDDING_API_URL", "http://localhost:6666")
 LLM_API_URL = os.getenv("LLM_API_URL", "http://llama_cpp:1349/completion")
 LLM_API_URL_NEW = os.getenv("LLM_API_URL_NEW", "http://llama_cpp_new:1348/completion")
-
