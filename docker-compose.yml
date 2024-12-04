@@ -60,8 +60,8 @@ services:
       volumes:
         - ./models:/models
       environment:
-        MODEL_PATH: "/models/qwen2.5-coder-1.5b-q8_0.gguf"
-      command: [ "-m", "/models/qwen2.5-coder-1.5b-q8_0.gguf", "--port", "1348", "--host", "0.0.0.0" ]
+        MODEL_PATH: "/models/Vikhr-Qwen-2.5-1.5b-Instruct-Q8_0.gguf"
+      command: [ "-m", "/models/Vikhr-Qwen-2.5-1.5b-Instruct-Q8_0.gguf", "--port", "1348", "--host", "0.0.0.0" ]
 
 
 
