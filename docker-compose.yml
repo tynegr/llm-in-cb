@@ -41,29 +41,17 @@ services:
     ports:
       - "5555:5555"
 
-  llama_cpp:
-    image: ghcr.io/ggerganov/llama.cpp:server
-    container_name: llama_cpp
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
     ports:
-      - "1349:1349"
+      - "11434:11434"
     volumes:
-      - ./models:/models
+      - ollama_data:/root/.ollama
     environment:
-      MODEL_PATH: "/models/qwen2.5-coder-1.5b-q8_0.gguf"
-    command: ["-m", "/models/qwen2.5-coder-1.5b-q8_0.gguf", "--port", "1349", "--host", "0.0.0.0"]
-
-    llama_cpp_new:
-      image: ghcr.io/ggerganov/llama.cpp:server
-      container_name: llama_cpp_new
-      ports:
-        - "1348:1348"
-      volumes:
-        - ./models:/models
-      environment:
-        MODEL_PATH: "/models/Vikhr-Qwen-2.5-1.5b-Instruct-Q8_0.gguf"
-      command: [ "-m", "/models/Vikhr-Qwen-2.5-1.5b-Instruct-Q8_0.gguf", "--port", "1348", "--host", "0.0.0.0" ]
-
-
+      - OLLAMA_MODEL=llama3.1:1b
+#    command: ["ollama", "serve"]
 
   bot:
     build:
@@ -73,12 +61,13 @@ services:
       TGBOT_API: "7934205115:AAGWUC4oDvzVbUBrKTiThJtjm2J_YAKoT1Q"
       EMBEDDING_API_URL: "http://embedding_api:6666"
       VECTOR_DB_API_URL: "http://vector_api:5555"
-      LLM_API_URL: "http://llama_cpp:1349/completion"
-      LLM_API_URL_NEW: "http://llama_cpp_new:1348/completion"
+      LLM_API_URL: "http://ollama:11434/api/generate"
     depends_on:
       - embedding_api
       - vector_api
-    command: [ "poetry", "run", "python", "llm_in_cb/bot/botik.py" ]
+      - ollama
+    command: [ "poetry", "run", "python", "llm_in_cb/bot/bot.py" ]
 
 volumes:
   qdrant_data:
+  ollama_data:
