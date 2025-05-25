@@ -4,15 +4,32 @@ from llm_in_cb.bot.core.config import LLM_API_URL, EMBEDDING_API_URL, VECTOR_DB_
 
 
 def query_llm(prompt, model):
+    print(f"[LLM] Вызов query_llm с prompt:\n{prompt}\nи model: {model}", flush=True)
     try:
-        data = {"model": model, "prompt": prompt, "max_tokens": 200}
+        data = {"model": model, "prompt": prompt, "max_tokens": 200, "stream": False}
+        print(f"[LLM] Payload запроса: {data}", flush=True)
         headers = {"Content-Type": "application/json"}
+        print(f"[LLM] URL: {LLM_API_URL}", flush=True)
+
         response = requests.post(LLM_API_URL, headers=headers, json=data)
+        print(f"[LLM] Status code: {response.status_code}", flush=True)
+        print(f"[LLM] Raw response text: {response.text}", flush=True)
+
         response.raise_for_status()
         response_json = response.json()
-        return response_json.get("choices", [{}])[0].get("text", "Ошибка: пустой ответ").strip()
+        print(f"[LLM] JSON-ответ: {response_json}", flush=True)
+
+        result = response_json.get("response", "Ошибка: пустой ответ")
+        print(f"[LLM] Итоговый ответ: {result}", flush=True)
+        return result.strip()
     except requests.RequestException as e:
+        print(f"[LLM] Ошибка запроса к LLM: {str(e)}", flush=True)
         return f"Ошибка запроса к LLM: {str(e)}"
+    except Exception as e:
+        print(f"[LLM] Общая ошибка в query_llm: {str(e)}", flush=True)
+        return f"Ошибка в query_llm: {str(e)}"
+
+
 
 def get_embeddings(text):
     try:
